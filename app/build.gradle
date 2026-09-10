@@ -22,6 +22,14 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    // Ganti nama file .apk hasil build jadi "beker.apk" (bukan nama default
+    // "app-debug.apk") supaya lebih jelas waktu didownload dari Artifacts.
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            outputFileName = "beker.apk"
+        }
+    }
 }
 
 dependencies {
