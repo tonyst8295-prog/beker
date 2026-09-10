@@ -1,0 +1,31 @@
+apply plugin: 'com.android.application'
+
+android {
+    namespace 'com.pos.printerbridge'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.pos.printerbridge"
+        minSdk 23
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    // Library ESC/POS gratis & open source (lisensi MIT) - https://github.com/DantSu/ESCPOS-ThermalPrinter-Android
+    implementation 'com.github.DantSu:ESCPOS-ThermalPrinter-Android:3.3.0'
+}

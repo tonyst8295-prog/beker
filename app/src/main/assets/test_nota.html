@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Uji Coba Cetak Nota</title>
+<style>
+  body { font-family: sans-serif; padding: 20px; color: #222; }
+  button { font-size: 18px; padding: 14px 24px; background:#2f7a52; color:#fff; border:none; border-radius:8px; }
+  button:active { opacity: 0.8; }
+  pre { background: #f0f0f0; padding: 10px; white-space: pre-wrap; font-size: 13px; margin-top:16px; }
+  #status { font-weight: bold; margin-top: 10px; }
+</style>
+</head>
+<body>
+  <h2>Uji Coba Cetak Nota</h2>
+  <p>Halaman ini untuk mengetes koneksi ke printer Bluetooth sebelum disambungkan
+     ke halaman PHP asli kamu. Pastikan sudah pairing printer (menu titik-tiga
+     di pojok kanan atas &rarr; "Pilih Printer") lalu tekan tombol di bawah.</p>
+
+  <button onclick="cetak()">Cetak Nota Contoh</button>
+  <p id="status"></p>
+  <pre id="isi"></pre>
+
+  <script>
+    function cetak() {
+      var teks =
+        "[C]<b>TOKO CONTOH</b>\n" +
+        "[C]Jl. Contoh No. 1, Jakarta\n" +
+        "[C]================================\n" +
+        "[L]10 Sep 2026 10:00           No.001\n" +
+        "[C]--------------------------------\n" +
+        "[L]Kabel USB-C\n" +
+        "[L]  2 x 15.000[R]30.000\n" +
+        "[L]Charger 20W\n" +
+        "[L]  1 x 85.000[R]85.000\n" +
+        "[C]--------------------------------\n" +
+        "[L]<b>TOTAL</b>[R]<b>115.000</b>\n" +
+        "[C]================================\n" +
+        "[C]Terima kasih!\n" +
+        "[C]\n";
+
+      document.getElementById('isi').textContent = teks;
+
+      if (window.Android) {
+        window.Android.cetakNota(teks);
+        document.getElementById('status').textContent = 'Mengirim ke printer...';
+      } else {
+        document.getElementById('status').textContent =
+          'Jembatan Android tidak ditemukan (wajar kalau ini dibuka di Chrome/PC biasa, bukan di dalam app).';
+        window.print();
+      }
+    }
+  </script>
+</body>
+</html>

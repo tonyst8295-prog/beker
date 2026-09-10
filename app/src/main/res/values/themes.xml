@@ -1,0 +1,8 @@
+<resources>
+    <!-- Pakai .NoActionBar karena toolbar-nya sekarang dibuat manual lewat
+         Toolbar di activity_main.xml (bukan action bar sistem) - supaya logo
+         + tulisan "SBC" bisa ditata persis sejajar. Menu titik-tiga tetap
+         muncul karena Toolbar ini didaftarkan sebagai action bar lewat
+         setSupportActionBar() di MainActivity. -->
+    <style name="Theme.CetakNota" parent="Theme.AppCompat.DayNight.NoActionBar" />
+</resources>
