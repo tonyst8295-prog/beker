@@ -5,19 +5,11 @@
     android:orientation="horizontal"
     android:gravity="center_vertical">
 
-    <ImageView
-        android:id="@+id/logoBrand"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:src="@drawable/logo_sbc"
-        android:contentDescription="Logo SBC Group" />
-
     <TextView
         android:id="@+id/titleBrand"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:text="SBC"
+        android:text="BEKER"
         android:textColor="#000000"
         android:textSize="20sp"
         android:textStyle="bold" />
