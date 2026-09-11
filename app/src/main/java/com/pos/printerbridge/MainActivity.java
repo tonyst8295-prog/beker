@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.CookieManager;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -104,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
         menu.add("Pilih Printer");
         menu.add("Ukuran Kertas");
         menu.add("Muat Ulang Halaman");
+        menu.add("Logout");
         return true;
     }
 
@@ -118,6 +120,9 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if ("Muat Ulang Halaman".equals(judul)) {
             webView.reload();
+            return true;
+        } else if ("Logout".equals(judul)) {
+            konfirmasiLogout();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -190,6 +195,60 @@ public class MainActivity extends AppCompatActivity {
                     dialog.dismiss();
                 })
                 .show();
+    }
+
+    /** Tampilkan konfirmasi dulu sebelum benar-benar logout (hapus cookies). */
+    private void konfirmasiLogout() {
+        new AlertDialog.Builder(this)
+                .setTitle("Logout")
+                .setMessage("Keluar dari akun yang sedang login di aplikasi ini?")
+                .setPositiveButton("Logout", (dialog, which) -> logout())
+                .setNegativeButton("Batal", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    // Nama cookie yang TIDAK boleh terhapus waktu logout (misal cookie "cl").
+    // Kalau nanti mau tambah cookie lain yang harus disimpan juga, tinggal
+    // tambahkan namanya di array ini.
+    private static final String[] COOKIE_YANG_DISIMPAN = {"cl"};
+
+    /**
+     * Hapus cookies (termasuk session login) KECUALI cookie yang namanya
+     * ada di COOKIE_YANG_DISIMPAN, lalu muat ulang halaman dari awal -
+     * biasanya akan kembali ke halaman login.
+     */
+    private void logout() {
+        CookieManager cookieManager = CookieManager.getInstance();
+
+        // Simpan dulu nilai cookie yang tidak boleh hilang, sebelum semua
+        // cookie dihapus.
+        String cookieSaatIni = cookieManager.getCookie(SERVER_URL);
+        java.util.Map<String, String> nilaiYangDisimpan = new java.util.HashMap<>();
+        if (cookieSaatIni != null) {
+            for (String bagian : cookieSaatIni.split(";")) {
+                String[] pasangan = bagian.trim().split("=", 2);
+                if (pasangan.length == 2) {
+                    String namaCookie = pasangan[0].trim();
+                    for (String namaYangDisimpan : COOKIE_YANG_DISIMPAN) {
+                        if (namaYangDisimpan.equals(namaCookie)) {
+                            nilaiYangDisimpan.put(namaCookie, pasangan[1].trim());
+                        }
+                    }
+                }
+            }
+        }
+
+        cookieManager.removeAllCookies(hasilnya -> {
+            // Pasang kembali cookie yang tadi disimpan.
+            for (java.util.Map.Entry<String, String> entri : nilaiYangDisimpan.entrySet()) {
+                cookieManager.setCookie(SERVER_URL, entri.getKey() + "=" + entri.getValue() + "; path=/");
+            }
+            cookieManager.flush();
+            runOnUiThread(() -> {
+                webView.loadUrl(SERVER_URL);
+                Toast.makeText(MainActivity.this, "Berhasil logout.", Toast.LENGTH_SHORT).show();
+            });
+        });
     }
 
     /**
